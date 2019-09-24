@@ -1,29 +1,28 @@
-const graphql = require('graphql')
+const graphql = require('graphql');
 
-const {GraphQLObjectType, GraphQLString, GraphQLSchema} = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
 const MoveType = new GraphQLObjectType({
-    name: 'Move',
-    fields: ()=>({
-        id: {type: GraphQLString},
-        name: {type: GraphQLString},
-        ganre: {type: GraphQLString},
-
-    })
+  name: 'Move',
+  fields: () => ({
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    ganre: { type: GraphQLString },
+  }),
 });
 
 const Query = new GraphQLObjectType({
-    mane: 'Query',
+  name: 'Query',
+  fields: {
     move: {
-        type: MoveType,
-        args: {
-            id: {type: GraphQLString}
-        },
-        resolve(parent, args){
-
-        }
-    }
-})
+      type: MoveType,
+      args: {
+        id: { type: GraphQLString },
+      },
+      resolve(parent, args) {},
+    },
+  },
+});
 
 module.exports = new GraphQLSchema({
-    query: Query
-})
+  query: Query,
+});
