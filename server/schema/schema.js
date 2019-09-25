@@ -1,10 +1,17 @@
 const graphql = require('graphql');
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
-const MoveType = new GraphQLObjectType({
-  name: 'Move',
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID } = graphql;
+
+const movies = [
+  { id: 1, name: '1984', ganre: 'fight' },
+  { id: 2, name: '20 000 lie', ganre: 'SCARY' },
+  { id: '3', name: '3 мушкетера', ganre: 'sci-fi' },
+  { id: '4', name: '4 ноги', ganre: 'fight' },
+];
+const MoveiType = new GraphQLObjectType({
+  name: 'Movie',
   fields: () => ({
-    id: { type: GraphQLString },
+    id: { type: GraphQLID },
     name: { type: GraphQLString },
     ganre: { type: GraphQLString },
   }),
@@ -13,12 +20,14 @@ const MoveType = new GraphQLObjectType({
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: {
-    move: {
-      type: MoveType,
+    movie: {
+      type: MoveiType,
       args: {
-        id: { type: GraphQLString },
+        id: { type: GraphQLID },
       },
-      resolve(parent, args) {},
+      resolve(parent, args) {
+        return movies.find((movie) => movie.id == args.id);
+      },
     },
   },
 });
