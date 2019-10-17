@@ -4,10 +4,10 @@ const schema = require('../schema/schema');
 const mongoose = require('mongoose');
 const app = express();
 const PORT = 3005;
-
+//скопируй ссылку в mongoDB Compas
 const uri =
   'mongodb+srv://Anor:123qweasd@cluster0-v0ttf.mongodb.net/test?retryWrites=true&w=majority';
-const client = mongoose.connect(uri, { useMongoClient: true });
+const client = mongoose.connect(uri, { useNewUrlParser: true });
 /*client.connect(err => {
   const directors = client.db("test").collection("directors");
   const movies = client.db("test").collection("movies");
