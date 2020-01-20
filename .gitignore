@@ -16,5 +16,5 @@ node_modules/
 build/
 public/bundle.js
 public/bundle.js.map
-public/
 
+/client/graphql-tutorial/

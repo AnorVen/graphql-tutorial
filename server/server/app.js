@@ -2,6 +2,7 @@ const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const schema = require('../schema/schema');
 const mongoose = require('mongoose');
+const cors  = require('cors')
 const app = express();
 const PORT = 3005;
 //скопируй ссылку в mongoDB Compas
@@ -14,7 +15,7 @@ const client = mongoose.connect(uri, { useNewUrlParser: true });
   // perform actions on the collection object
   client.close();
 });*/
-
+app.use(cors())
 const dbConnection = mongoose.connection;
 dbConnection.on('error', (err) => console.log(`error DB ${err}`));
 dbConnection.once('open', () => console.log(`DB connect done`));
@@ -25,6 +26,7 @@ app.use(
     graphiql: true,
   })
 );
+
 app.listen(PORT, (err) => {
   err ? console.log(error) : console.log('Server start');
 });
