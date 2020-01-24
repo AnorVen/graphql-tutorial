@@ -5,7 +5,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Checkbox from '@material-ui/core/Checkbox';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -13,14 +12,17 @@ import Menu from '@material-ui/core/Menu';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 
-import MoviesDialog from '../MoviesDialog/MoviesDialog';
+import DirectorsDialog from '../DirectorsDialog/DirectorsDialog';
 
-import withHocs from './MoviesTableHoc';
+import withHocs from './DirectorsTableHoc';
+import DirectorsSearch
+  from '../DirectorsSearch/DirectorsSearch';
 
-class MoviesTable extends React.Component {
+class DirectorsTable extends React.Component {
   state = {
     anchorEl: null,
     openDialog: false,
+    name: ''
   };
 
   handleDialogOpen = () => {
@@ -41,7 +43,7 @@ class MoviesTable extends React.Component {
     this.setState({ anchorEl: null });
   };
 
-  handleEdit = () => {
+  handleEdit = (row) => {
     this.props.onOpen(this.state.data);
     this.handleClose();
   };
@@ -50,46 +52,58 @@ class MoviesTable extends React.Component {
     this.handleDialogOpen();
     this.handleClose();
   };
+  handleChange = name => (event) => {
+    this.setState({ [name]: event.target.value });
+  };
+
+  handleSearch = (e) => {
+    const { data } = this.props;
+    const { name } = this.state;
+
+    if(e.charCode === 13) {
+      data.fetchMore({
+        variables: { name },
+        updateQuery: (previousResult, { fetchMoreResult }) => fetchMoreResult,
+      });
+    }
+  };
 
   render() {
-    const { anchorEl, openDialog, data: activeElem = {} } = this.state;
-
-    const { classes, data = {}} = this.props;
-    const { movies = [{id:0, genre: '', rate: 0, director:{ name: '', id: 0}, watched: true}] } = data;
-
+    const { anchorEl, openDialog, data: activeElem = {}, name} = this.state;
+    const { classes, data = {} } = this.props;
+    const { directors = [] } = data;
     return (
       <>
-        <MoviesDialog open={openDialog} handleClose={this.handleDialogClose} id={activeElem.id}/>
+        <Paper>
+          <DirectorsSearch name={name} handleChange={this.handleChange} handleSearch={this.handleSearch} />
+        </Paper>
+        <DirectorsDialog open={openDialog} handleClose={this.handleDialogClose} id={activeElem.id}/>
         <Paper className={classes.root}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell>Genre</TableCell>
-                <TableCell align="right">Rate</TableCell>
-                <TableCell>Director</TableCell>
-                <TableCell>Watched</TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell align="right">Age</TableCell>
+                <TableCell>Movies</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {movies.map(movie => {
+              {directors.map(director => {
                 return (
-                  <TableRow key={movie.id}>
-                    <TableCell component="th" scope="row">{movie.name}</TableCell>
-                    <TableCell>{movie.genre}</TableCell>
-                    <TableCell align="right">{movie.rate}</TableCell>
-                    <TableCell>{movie.director.name}</TableCell>
+                  <TableRow key={director.id}>
+                    <TableCell component="th" scope="row">{director.name}</TableCell>
+                    <TableCell align="right">{director.age}</TableCell>
                     <TableCell>
-                      <Checkbox checked={movie.watched} disabled/>
+                      {director.movies.map((movie, key) => <div key={movie.name}>{`${key + 1}. `}{movie.name}</div>)}
                     </TableCell>
                     <TableCell align="right">
                       <>
-                        <IconButton color="inherit" onClick={(e) => this.handleClick(e, movie)}>
+                        <IconButton color="inherit" onClick={(e) => this.handleClick(e, director)}>
                           <MoreIcon/>
                         </IconButton>
                         <Menu id="simple-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={this.handleClose}>
-                          <MenuItem onClick={this.handleEdit}><CreateIcon/> Edit</MenuItem>
+                          <MenuItem onClick={() => this.handleEdit(director)}><CreateIcon/> Edit</MenuItem>
                           <MenuItem onClick={this.handleDelete}><DeleteIcon/> Delete</MenuItem>
                         </Menu>
                       </>
@@ -105,4 +119,4 @@ class MoviesTable extends React.Component {
   }
 };
 
-export default withHocs(MoviesTable);
+export default withHocs(DirectorsTable);

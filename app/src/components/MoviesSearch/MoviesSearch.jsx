@@ -2,12 +2,12 @@ import React from 'react';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 
-import withHocs from './DirectorsSearchHoc';
+import withHocs from './MoviesSearchHoc';
 
-class DirectorsSearch extends React.Component {
+class MoviesSearch extends React.Component {
 
   render() {
-    const { classes } = this.props;
+    const { classes, name, handleSearch, handleChange} = this.props;
 
     return (
       <div className={classes.search}>
@@ -16,6 +16,9 @@ class DirectorsSearch extends React.Component {
         </div>
         <InputBase
           placeholder="Search…"
+          onChange={handleChange('name')}
+          onKeyPress={(e)=>handleSearch(e)}
+          value={name}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput,
@@ -26,4 +29,4 @@ class DirectorsSearch extends React.Component {
   }
 };
 
-export default withHocs(DirectorsSearch);
+export default withHocs(MoviesSearch);

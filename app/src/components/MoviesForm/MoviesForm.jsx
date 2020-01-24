@@ -20,9 +20,12 @@ class MoviesForm extends React.Component {
   };
 
   handleSave = () => {
-    const { selectedValue, onClose, addMovie } = this.props;
+    const { selectedValue, onClose, addMovie, updateMovie } = this.props;
     const { id, name, genre, rate, directorId, watched } = selectedValue;
-    addMovie({ id, name, genre, rate: Number(rate), directorId, watched: Boolean(watched) });
+
+    id
+      ? updateMovie({ id, name, genre, rate: Number(rate), directorId, watched: Boolean(watched) })
+      : addMovie({ name, genre, rate: Number(rate), directorId, watched: Boolean(watched) });
     onClose();
 
 
@@ -31,7 +34,7 @@ class MoviesForm extends React.Component {
   render() {
     const { data = {}, classes, open, handleChange, handleSelectChange, handleCheckboxChange, selectedValue = {} } = this.props;
     const { name, genre, rate, directorId, watched } = selectedValue;
-    const { directors = [{name: '', id: 0}] } = data;
+    const { directors = [{ name: '', id: 0 }] } = data;
     return (
       <Dialog onClose={this.handleClose} open={open} aria-labelledby="simple-dialog-title">
         <DialogTitle className={classes.title} id="simple-dialog-title">Movie information</DialogTitle>
@@ -78,7 +81,7 @@ class MoviesForm extends React.Component {
               onChange={handleSelectChange}
               input={<OutlinedInput name="directorId" id="outlined-director" labelWidth={57}/>}
             >
-              {directors.map(director => director ?<MenuItem key={director.id} value={director.id}>{director.name}</MenuItem> : null)}
+              {directors.map(director => <MenuItem key={director.id} value={director.id}>{director.name}</MenuItem>)}
             </Select>
           </FormControl>
           <div className={classes.wrapper}>
